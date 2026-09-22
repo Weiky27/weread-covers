@@ -14,6 +14,8 @@ svg{display:block;width:100%;height:100%}
 .node{cursor:pointer}
 .node circle{stroke:#fcfcfb;stroke-width:2}
 .node text{font-size:10px;fill:#52514e;pointer-events:none;text-anchor:middle}
+.node.hl circle{stroke:#3987e5;stroke-width:2.5}
+.node.nb circle{stroke:#c3c2b7}
 .node.dim circle{opacity:.14}
 .node.dim text{opacity:.14}
 #hint{position:absolute;top:10px;left:12px;font-size:11px;color:#898781;pointer-events:none}
@@ -62,11 +64,11 @@ function showTip(n,e){var s='<div class="t1">'+esc(n.label)+'</div>';if(n.date)s
 function moveTip(e){var w=tip.offsetWidth,h=tip.offsetHeight;var x=e.clientX+14,y=e.clientY+14;if(x+w>window.innerWidth-8)x=e.clientX-w-14;if(y+h>window.innerHeight-8)y=e.clientY-h-14;tip.style.left=x+'px';tip.style.top=y+'px';}
 function hideTip(){tip.style.display='none';}
 
-function hoverOn(i){nodeEls[i].classList.add('hl');for(var k=0;k<inc[i].length;k++){var e=inc[i][k].e;lineEls[e].classList.add('hl');nodeEls[inc[i][k].o].classList.add('nb');}}
-function hoverOff(i){nodeEls[i].classList.remove('hl');for(var k=0;k<inc[i].length;k++){var e=inc[i][k].e;lineEls[e].classList.remove('hl');nodeEls[inc[i][k].o].classList.remove('nb');}}
+function hoverOn(i){for(var k=0;k<nodes.length;k++)nodeEls[k].classList.add('dim');for(var e=0;e<lineEls.length;e++)lineEls[e].classList.add('dim');nodeEls[i].classList.remove('dim');nodeEls[i].classList.add('hl');for(var k=0;k<inc[i].length;k++){var e=inc[i][k].e;lineEls[e].classList.remove('dim');lineEls[e].classList.add('hl');var o=inc[i][k].o;nodeEls[o].classList.remove('dim');nodeEls[o].classList.add('nb');}}
+function hoverOff(){for(var k=0;k<nodes.length;k++){nodeEls[k].classList.remove('dim');nodeEls[k].classList.remove('hl');nodeEls[k].classList.remove('nb');}for(var e=0;e<lineEls.length;e++){lineEls[e].classList.remove('dim');lineEls[e].classList.remove('hl');}}
 
 svg.addEventListener('pointerover',function(e){var g=e.target.closest?e.target.closest('.node'):null;if(!g)return;var i=Number(g.getAttribute('data-i'));hoverOn(i);showTip(nodes[i],e);});
-svg.addEventListener('pointerout',function(e){var g=e.target.closest?e.target.closest('.node'):null;if(!g)return;var i=Number(g.getAttribute('data-i'));hoverOff(i);hideTip();});
+svg.addEventListener('pointerout',function(e){var g=e.target.closest?e.target.closest('.node'):null;if(!g)return;hoverOff();hideTip();});
 svg.addEventListener('pointermove',function(e){if(tip.style.display==='block')moveTip(e);});
 
 var drag=null,moved=false;
